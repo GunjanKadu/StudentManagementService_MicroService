@@ -25,22 +25,22 @@ jobs:
 
       - name: Install Auth Service dependencies
         run: |
-          cd services/authService
+          cd authService
           npm install
 
       - name: Run Auth Service tests
         run: |
-          cd services/authService
+          cd authService
           npm test
 
       - name: Install Student Service dependencies
         run: |
-          cd services/studentService
+          cd studentService
           npm install
 
       - name: Run Student Service tests
         run: |
-          cd services/studentService
+          cd studentService
           npm test
 
       - name: Upload coverage report (optional)
