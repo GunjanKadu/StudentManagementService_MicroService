@@ -25,7 +25,13 @@ jobs:
 
       - name: Fail if test files are changed
         run: |
+          # Fetch the list of changed files between the current branch and main
           CHANGED_FILES=$(git diff --name-only origin/main...HEAD)
+
+          # Debugging step: Display the changed files for inspection
+          echo "Changed files: $CHANGED_FILES"
+
+          # Check if any of the changed files are in the test folder and end with .test.js
           if echo "$CHANGED_FILES" | grep -E '(^|/)test[s]?/.+\.test\.js$'; then
             echo "❌ Changes to test files (e.g., util.test.js) are not allowed!"
             exit 1
