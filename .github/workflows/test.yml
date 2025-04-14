@@ -36,6 +36,13 @@ jobs:
           cd studentService
           npm test
 
+      - name: Fail if test files are changed
+        run: |
+          if git diff --name-only origin/main...HEAD | grep '^tests/'; then
+            echo "❌ You are not allowed to modify files in the tests/ directory."
+            exit 1
+          fi
+
       - name: Upload coverage report (optional)
         if: success()
         uses: actions/upload-artifact@v4
