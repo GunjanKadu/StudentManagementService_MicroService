@@ -1,10 +1,10 @@
 const express = require("express");
 const request = require("supertest");
-const { verifyRole, restrictStudentToOwnData } = require("./util");
+const { verifyRole, restrictStudentToOwnData } = require("../routes/auth/util");
 
 // Mock token verification to bypass real JWT + JWKS
-jest.mock("./util", () => {
-  const original = jest.requireActual("./util");
+jest.mock("../routes/auth/util", () => {
+  const original = jest.requireActual("../routes/auth/util");
   return {
     ...original,
     verifyJWTWithJWKS: jest.fn(() =>
