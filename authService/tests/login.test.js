@@ -18,6 +18,15 @@ app.use("/login", loginRouter);
 describe("Login API", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.restoreAllMocks();
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  afterAll(() => {
+    server.close();
   });
 
   describe("POST /login/student", () => {
