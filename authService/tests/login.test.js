@@ -25,10 +25,6 @@ describe("Login API", () => {
     jest.restoreAllMocks();
   });
 
-  afterAll(() => {
-    server.close();
-  });
-
   describe("POST /login/student", () => {
     it("should return 400 if email or password is missing", async () => {
       const res = await request(app).post("/login/student").send({});
