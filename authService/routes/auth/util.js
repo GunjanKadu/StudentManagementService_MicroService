@@ -1,0 +1,92 @@
+const fs = require("fs");
+const jwt = require("jsonwebtoken");
+const path = require("path");
+const dotenv = require("dotenv");
+const axios = require("axios");
+const {
+  STUDENT_SERVICE,
+  PROFESSOR__SERVICE,
+  ROLES,
+} = require("../../../consts");
+const { getCorrelationId } = require("../../../correlationId");
+
+dotenv.config();
+
+const axiosInstance = axios.create();
+
+axiosInstance.interceptors.request.use(
+  (req) => {
+    const correlationId = getCorrelationId(); // Retrieve the correlation ID
+    req.headers["x-correlation-id"] = correlationId; // Add it to the headers
+    return req;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+// Path to your private and public keys
+const privateKey = fs.readFileSync(
+  path.join(__dirname, "../auth/keys/private.key"),
+  "utf8"
+);
+const publicKey = fs.readFileSync(
+  path.join(__dirname, "../auth/keys/public.key"),
+  "utf8"
+);
+
+const kid = "1";
+const jku = `http://localhost:${process.env.PORT}/.well-known/jwks.json`;
+
+// Define additional headers
+const customHeaders = {
+  kid, // Replace with the actual Key ID
+  jku, // Replace with your JWKS URL
+};
+
+// Generate a JWT using the private key
+function generateJWTWithPrivateKey(payload) {
+  // Sign the JWT using RS256 (asymmetric encryption)
+  const token = jwt.sign(payload, privateKey, {
+    algorithm: "RS256",
+    header: customHeaders,
+    expiresIn: "6h", // Set expiration
+  });
+  return token;
+}
+
+// JWT verification function
+function verifyJWTWithPublicKey(token) {
+  return jwt.verify(token, publicKey, { algorithms: ["RS256"] });
+}
+
+async function fetchStudents() {
+  let token = generateJWTWithPrivateKey({
+    id: ROLES.AUTH_SERVICE,
+    roles: [ROLES.AUTH_SERVICE],
+  });
+  const response = await axiosInstance.get(`${STUDENT_SERVICE}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+}
+
+async function fetchProfessors() {
+  let token = generateJWTWithPrivateKey({
+    id: ROLES.AUTH_SERVICE,
+    roles: [ROLES.AUTH_SERVICE],
+  });
+  const response = await axiosInstance.get(`${PROFESSOR__SERVICE}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+}
+module.exports = {
+  kid,
+  generateJWTWithPrivateKey,
+  fetchStudents,
+  fetchProfessors,
+};
