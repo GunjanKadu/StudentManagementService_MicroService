@@ -38,8 +38,9 @@ jobs:
 
       - name: Fail if test files are changed
         run: |
-          if git diff --name-only origin/main...HEAD | grep '^tests/'; then
-            echo "❌ You are not allowed to modify files in the tests/ directory."
+          CHANGED_FILES=$(git diff --name-only origin/main...HEAD)
+          if echo "$CHANGED_FILES" | grep -E '(^|/)test[s]?/.+\.test\.js$'; then
+            echo "❌ Changes to test files (e.g., util.test.js) are not allowed!"
             exit 1
           fi
 
