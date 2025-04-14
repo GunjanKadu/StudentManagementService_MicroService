@@ -6,7 +6,7 @@
   "scripts": {
     "start-auth-service": "node index.js",
     "dev-auth-service": "nodemon index.js",
-    "test": "jest --detectOpenHandles"
+    "test": "jest"
   },
   "author": "Gunjan Kadu",
   "license": "ISC",

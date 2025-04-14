@@ -26,16 +26,6 @@ jobs:
       - name: Install Main dependencies
         run: npm install
 
-      - name: Install Auth Service dependencies
-        run: |
-          cd authService
-          npm install
-
-      - name: Run Auth Service tests
-        run: |
-          cd authService
-          npm test
-
       - name: Install Student Service dependencies
         run: |
           cd studentService

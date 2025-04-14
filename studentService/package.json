@@ -6,7 +6,7 @@
   "scripts": {
     "start-student-service": "node index.js",
     "dev-student-service": "nodemon index.js",
-    "test": "jest --detectOpenHandles"
+    "test": "jest"
   },
   "author": "Gunjan Kadu",
   "license": "ISC",
