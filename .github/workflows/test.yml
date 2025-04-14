@@ -23,6 +23,14 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      - name: Fail if test files are changed
+        run: |
+          CHANGED_FILES=$(git diff --name-only origin/main...HEAD)
+          if echo "$CHANGED_FILES" | grep -E '(^|/)test[s]?/.+\.test\.js$'; then
+            echo "❌ Changes to test files (e.g., util.test.js) are not allowed!"
+            exit 1
+          fi
+
       - name: Install Main dependencies
         run: npm install
 
@@ -35,14 +43,6 @@ jobs:
         run: |
           cd studentService
           npm test
-
-      - name: Fail if test files are changed
-        run: |
-          CHANGED_FILES=$(git diff --name-only origin/main...HEAD)
-          if echo "$CHANGED_FILES" | grep -E '(^|/)test[s]?/.+\.test\.js$'; then
-            echo "❌ Changes to test files (e.g., util.test.js) are not allowed!"
-            exit 1
-          fi
 
       - name: Upload coverage report (optional)
         if: success()
